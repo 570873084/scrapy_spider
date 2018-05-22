@@ -1,0 +1,34 @@
+﻿scrapy项目步骤：
+
+1.创建项目
+
+scrapy startproject xxx
+
+2.编写items.py文件
+  设置需要保存的数据字段
+
+3.进入xxx/spiders
+  编写爬虫文件，文件里的name就是爬虫名（不同于项目名）
+  scrapy genspider  name  “域名”
+  
+  #用yield传数据给pipeline 而不是用return
+  yield item
+  
+  将请求重新发送给调度器入队列。出队列，交给下载器去下载
+  scrapy.Request(url,callback=self.parse)
+
+4.编写管道文件pipelines 结尾需要return
+
+5.运行 
+  scrapy crawl xxx
+  scrapy crawl xxx -o json/csv/xml
+
+  或者在xxx文件夹下编写运行程序
+  from scrapy import cmdline
+
+  cmdline.execute("scrapy crawl itcast -o 11.csv".split())
+
+
+
+
+
