@@ -6,6 +6,11 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+from viewpic.settings import USER_AGENT
+from viewpic.settings import PROXIES
+import random
+import base64
+
 
 
 class ViewpicSpiderMiddleware(object):
@@ -78,7 +83,21 @@ class ViewpicDownloaderMiddleware(object):
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-        return None
+        #设置user-agent
+        useagent=random.choice(USER_AGENT)
+        print(useagent)
+        request.headers.setdefault('User-Agent',useagent)
+        proxy = random.choice(PROXIES)
+        #加代理
+        if proxy['user_passwd'] is None:
+            #没有代理验证密码
+            request.meta['proxy'] = 'http://'+proxy['ip_port']
+        else:
+            #代理账号密码需要用base64编码
+            base64_passwd =base64.b64encode(proxy['user_passwd'])
+            request.meta['proxy'] ='http://'+proxy['ip_port']
+            request.headers['Proxy-Authrization'] = 'Basic'+base64_passwd
+        #return None
 
     def process_response(self, request, response, spider):
         # Called with the response returned from the downloader.
